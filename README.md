@@ -12,3 +12,13 @@ TouchScale(
   child: ... // <- this your widget
 )
 ```
+
+### How to define the style globally.
+TouchScaleStyle defines the style of its descendant touch scale widgets, similar to how PrimaryScrollController defines the controller for its descendant widgets.
+
+```dart
+TouchScaleStyle(
+  scale: 1.1,
+  child: ...
+)
+```

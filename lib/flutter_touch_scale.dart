@@ -1,6 +1,7 @@
 library;
 
 export 'widgets/touch_scale.dart';
+export 'widgets/touch_scale_style.dart';
 export 'widgets/touch_scale_gesture_detector.dart';
 
 export 'components/touch_scale_context.dart';
