@@ -3,6 +3,11 @@ This Flutter package delivers clear visual feedback through scale animations on 
 
 > See Also, If you want the change-log by version for this package. refer to [Change Log](CHANGELOG.md) for details.
 
+## Preview
+The gif image below may appear distorted and choppy due to compression.
+
+![preview](https://github.com/user-attachments/assets/87a0a39e-0c51-4bbd-96d9-a24307bfdf29)
+
 ## Usage
 The following explains the basic usage of this package.
 
