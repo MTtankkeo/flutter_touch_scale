@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_touch_scale/components/touch_scale_controller.dart';
-import 'package:flutter_touch_scale/components/touch_scale_gesture_recognizer.dart';
+import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
 class TouchScaleGestureDetector extends StatefulWidget {
   const TouchScaleGestureDetector({
@@ -33,16 +32,16 @@ class _TouchScaleGestureDetectorState extends State<TouchScaleGestureDetector> {
   void _handlePointerDown(PointerDownEvent event) {
     _recognizer ??= TouchScaleGestureRecognizer(
       onPress: () {
+        widget.controller.callback = widget.onPress;
         widget.controller.forward();
-        widget.onPress.call();
       },
       onPressRejectable: () {
+        widget.controller.callback = widget.onPress;
         widget.controller.isRejectable = true;
         widget.controller.forward();
       },
       onPressAccept: () {
         widget.controller.accept();
-        widget.onPress.call();
       },
       onPressReject: () => widget.controller.reject(),
       onDispose: () => _recognizer = null,

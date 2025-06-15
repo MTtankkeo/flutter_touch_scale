@@ -27,3 +27,12 @@ TouchScaleStyle(
   child: ...
 )
 ```
+
+## The Properties of TouchScaleCallPhase
+The enumeration that defines the phase in which a touch scale callback is triggered.
+
+| Name | Description |
+| ---- | ----------- |
+| onAccepted | Sets the phase when the gesture is accepted, regardless of whether the animation starts. |
+| onScaleDownEnd | Sets the phase when the scale-down animation has completed. |
+| onScaleUpEnd | Sets the phase when the scale-up animation has completed. |

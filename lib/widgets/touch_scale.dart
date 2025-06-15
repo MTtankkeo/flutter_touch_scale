@@ -1,9 +1,22 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_touch_scale/components/touch_scale_context.dart';
 import 'package:flutter_touch_scale/components/touch_scale_controller.dart';
 import 'package:flutter_touch_scale/widgets/touch_scale_gesture_detector.dart';
 import 'package:flutter_touch_scale/widgets/touch_scale_style.dart';
+
+/// The enumeration that defines the phase in which
+/// a touch scale callback is triggered.
+enum TouchScaleCallPhase {
+  /// Sets the phase when the gesture is accepted,
+  /// regardless of whether the animation starts.
+  onAccepted,
+
+  /// Sets the phase when the scale-down animation has completed.
+  onScaleDownEnd,
+
+  /// Sets the phase when the scale-up animation has completed.
+  onScaleUpEnd,
+}
 
 /// A widget that scales down its child when pressed and triggers a callback on tap.
 /// Commonly used to enhance tap interactions with visual responsiveness.
@@ -25,6 +38,7 @@ class TouchScale extends StatefulWidget {
     this.reverseDuration,
     this.reverseCurve,
     this.scale,
+    this.callPhase,
     required this.onPress,
     required this.child,
   });
@@ -49,6 +63,9 @@ class TouchScale extends StatefulWidget {
   /// The scale factor to apply when pressed. For example,
   /// 0.9 means 90% of the original size.
   final double? scale;
+
+  /// Defines the phase in which a touch scale callback is triggered.
+  final TouchScaleCallPhase? callPhase;
 
   /// Called when the gesture is accepted and the press is confirmed.
   final VoidCallback onPress;
@@ -130,5 +147,12 @@ class _TouchScaleState extends State<TouchScale>
     return widget.previewDuration ??
         style?.previewDuration ??
         Duration(milliseconds: 25);
+  }
+
+  @override
+  TouchScaleCallPhase get callPhase {
+    return widget.callPhase ??
+        style?.callPhase ??
+        TouchScaleCallPhase.onAccepted;
   }
 }

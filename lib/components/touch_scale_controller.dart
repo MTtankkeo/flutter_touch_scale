@@ -2,7 +2,7 @@
 
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_touch_scale/components/touch_scale_context.dart';
+import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
 /// Controls the scale animation for the TouchScale widget,
 /// managing animation state and notifying listeners on changes.
@@ -21,11 +21,23 @@ class TouchScaleController extends ChangeNotifier {
   /// Indicates whether the gesture is currently rejectable.
   bool isRejectable = false;
 
+  /// A callback to be invoked when conditions are met.
+  VoidCallback? callback;
+
+  /// Calls [callback] if the gesture is not rejectable, then clears it.
+  void tryCall() {
+    if (isRejectable) return;
+    callback?.call();
+    callback = null;
+  }
+
   /// Accepts the gesture and notifies listeners of the current animation status.
   void accept() {
     assert(_animation != null);
+    assert(callback != null);
     isRejectable = false;
     _animation?.notifyStatusListeners(_animation!.status);
+    _whenPhase(TouchScaleCallPhase.onAccepted);
   }
 
   /// Rejects the gesture and starts reversing the animation.
@@ -37,6 +49,9 @@ class TouchScaleController extends ChangeNotifier {
   /// Starts the forward animation, initializing controllers if necessary.
   /// When completed and not rejectable, automatically reverses the animation.
   void forward() {
+    assert(!isRejectable ? callback != null : true);
+    _whenPhase(TouchScaleCallPhase.onAccepted);
+
     if (_animation == null) {
       _animation = AnimationController(
         vsync: context.vsync,
@@ -48,10 +63,12 @@ class TouchScaleController extends ChangeNotifier {
       _animation!.addStatusListener((status) {
         if (status == AnimationStatus.completed && !isRejectable) {
           _animation?.reverse();
+          _whenPhase(TouchScaleCallPhase.onScaleDownEnd);
         } else if (status == AnimationStatus.dismissed) {
           isRejectable = false;
           _animation?.dispose();
           _animation = null;
+          _whenPhase(TouchScaleCallPhase.onScaleUpEnd);
         }
       });
 
@@ -69,5 +86,13 @@ class TouchScaleController extends ChangeNotifier {
   void dispose() {
     _animation?.dispose();
     super.dispose();
+  }
+
+  /// Invokes the callback if the current call phase matches [phase].
+  /// Ensures the callback triggers only at the specified touch scale call phase.
+  void _whenPhase(TouchScaleCallPhase phase) {
+    if (context.callPhase == phase) {
+      tryCall();
+    }
   }
 }
