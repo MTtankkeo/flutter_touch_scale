@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_touch_scale/components/touch_scale_behavior.dart';
 import 'package:flutter_touch_scale/components/touch_scale_context.dart';
 import 'package:flutter_touch_scale/components/touch_scale_controller.dart';
 import 'package:flutter_touch_scale/widgets/touch_scale_gesture_detector.dart';
@@ -39,6 +40,7 @@ class TouchScale extends StatefulWidget {
     this.reverseCurve,
     this.scale,
     this.callPhase,
+    this.behavior,
     required this.onPress,
     required this.child,
   });
@@ -66,6 +68,10 @@ class TouchScale extends StatefulWidget {
 
   /// Defines the phase in which a touch scale callback is triggered.
   final TouchScaleCallPhase? callPhase;
+
+  /// The behavior used to apply additional visual effects during
+  /// the scaling interaction, such as opacity or shadow changes.
+  final TouchScaleBehavior? behavior;
 
   /// Called when the gesture is accepted and the press is confirmed.
   final VoidCallback onPress;
@@ -100,13 +106,13 @@ class _TouchScaleState extends State<TouchScale>
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          final Tween<double> tween = Tween(begin: 1.0, end: this.scale);
+          final Tween<double> tween = Tween(begin: 1.0, end: scale);
           final double fraction = tween.transform(_controller.animValue);
 
           return Transform.scale(
             alignment: Alignment.center,
             scale: fraction,
-            child: widget.child,
+            child: behavior.build(context, widget.child, _controller),
           );
         },
       ),
@@ -134,7 +140,7 @@ class _TouchScaleState extends State<TouchScale>
   Duration get reverseDuration {
     return widget.reverseDuration ??
         style?.reverseDuration ??
-        Duration(milliseconds: 300);
+        Duration(milliseconds: 250);
   }
 
   @override
@@ -154,5 +160,12 @@ class _TouchScaleState extends State<TouchScale>
     return widget.callPhase ??
         style?.callPhase ??
         TouchScaleCallPhase.onAccepted;
+  }
+
+  @override
+  TouchScaleBehavior get behavior {
+    return widget.behavior ??
+        style?.behavior ??
+        const DrivnTouchScaleBehavior();
   }
 }

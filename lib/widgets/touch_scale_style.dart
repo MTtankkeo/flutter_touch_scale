@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_touch_scale/components/touch_scale_behavior.dart';
 import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
 /// A inherited widget globally provides the style information for
@@ -13,6 +14,7 @@ class TouchScaleStyle extends InheritedWidget {
     this.previewDuration,
     this.scale,
     this.callPhase,
+    this.behavior,
     required super.child,
   });
 
@@ -40,6 +42,10 @@ class TouchScaleStyle extends InheritedWidget {
   /// Defines the phase in which a touch scale callback is triggered.
   final TouchScaleCallPhase? callPhase;
 
+  /// The behavior used to apply additional visual effects during
+  /// the scaling interaction, such as opacity or shadow changes.
+  final TouchScaleBehavior? behavior;
+
   @override
   bool updateShouldNotify(TouchScaleStyle oldWidget) {
     return duration != oldWidget.duration ||
@@ -48,7 +54,8 @@ class TouchScaleStyle extends InheritedWidget {
         reverseCurve != oldWidget.reverseCurve ||
         previewDuration != oldWidget.previewDuration ||
         scale != oldWidget.scale ||
-        callPhase != oldWidget.callPhase;
+        callPhase != oldWidget.callPhase ||
+        behavior != oldWidget.behavior;
   }
 
   /// Returns the [TouchScaleStyle] most closely associated with the given
