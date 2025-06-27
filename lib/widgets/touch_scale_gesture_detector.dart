@@ -5,7 +5,7 @@ import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 class TouchScaleGestureDetector extends StatefulWidget {
   const TouchScaleGestureDetector({
     super.key,
-    this.behavior = HitTestBehavior.deferToChild,
+    this.behavior = HitTestBehavior.opaque,
     required this.controller,
     required this.onPress,
     required this.child,

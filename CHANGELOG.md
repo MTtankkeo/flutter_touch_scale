@@ -8,3 +8,6 @@
 - Added `TouchScaleBehavior` to allow applying additional visual effects alongside the touch scaling interaction, such as opacity or shadow changes.
 
 - Modified `reverseDuration` from 300ms to 250ms to create a more natural scale-up animation.
+
+## 1.1.1
+- Modified the default hit test behavior from `deferToChild` to `opaque` in `TouchScaleGestureDetector`.
