@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: TouchScale(
-            onPress: () => print("Pressed!"),
+            onPress: () => log("Pressed!"),
             child: Text("Hello, World!"),
           ),
         ),

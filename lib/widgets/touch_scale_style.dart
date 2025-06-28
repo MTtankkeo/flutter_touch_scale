@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_touch_scale/components/touch_scale_behavior.dart';
 import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
 /// A inherited widget globally provides the style information for

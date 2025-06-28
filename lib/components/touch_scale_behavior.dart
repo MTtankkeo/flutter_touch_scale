@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_touch_scale/components/touch_scale_controller.dart';
 
 /// An abstract class that defines behavior for applying additional
