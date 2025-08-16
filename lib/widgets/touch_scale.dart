@@ -116,7 +116,7 @@ class _TouchScaleState extends State<TouchScale>
   TouchScaleResolver get resolver {
     return widget.resolver ??
         style?.resolver ??
-        DrivenTouchScaleResolver.pixels(10);
+        DrivenTouchScaleResolver.stevens(baseIntensity: 0.8);
   }
 
   @override

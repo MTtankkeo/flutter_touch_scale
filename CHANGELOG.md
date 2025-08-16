@@ -24,3 +24,6 @@
 
 ## 1.2.3
 - Fixed an issue where removeListener was called after disposal, causing the effect not to apply.
+
+## 1.3.0
+- Added `DrivenTouchScaleResolver.stevens()` constructor for perceptually balanced touch scaling based on Stevens' Power Law Stevens scaling provides consistent visual feedback across different widget sizes. (smaller widgets get stronger effects, larger widgets get subtle effects)
