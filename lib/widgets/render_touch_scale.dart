@@ -1,5 +1,3 @@
-import 'package:vector_math/vector_math_64.dart';
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_touch_scale/flutter_touch_scale.dart';
@@ -80,9 +78,9 @@ class _TouchScaleRenderBox extends RenderProxyBox {
     final double dy = size.height / 2;
 
     final Matrix4 transform = Matrix4.identity()
-      ..translateByVector3(Vector3(dx, dy, 0))
-      ..scaleByVector3(Vector3(scale, scale, 1))
-      ..translateByVector3(Vector3(-dx, -dy, 0));
+      ..translate(dx, dy)
+      ..scale(scale, scale)
+      ..translate(-dx, -dy);
 
     // If the child has its own layer, always use pushTransform.
     if (child.needsCompositing) {
