@@ -21,3 +21,6 @@
 
 ## 1.2.2
 - Fixed an issue about the dependency.
+
+## 1.2.3
+- Fixed an issue where removeListener was called after disposal, causing the effect not to apply.

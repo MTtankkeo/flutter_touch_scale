@@ -1,6 +1,6 @@
 name: flutter_touch_scale
 description: "This Flutter package delivers clear visual feedback through scale animations on user touch interactions."
-version: 1.2.2
+version: 1.2.3
 repository: https://github.com/MTtankkeo/flutter_touch_scale
 
 environment:

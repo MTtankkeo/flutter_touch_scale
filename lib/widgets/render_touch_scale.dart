@@ -55,9 +55,9 @@ class _TouchScaleRenderBox extends RenderProxyBox {
   RenderBox get child => super.child!;
 
   @override
-  void detach() {
+  void dispose() {
     _controller.removeListener(markNeedsPaint);
-    super.detach();
+    super.dispose();
   }
 
   @override
