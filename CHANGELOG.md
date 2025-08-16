@@ -27,3 +27,6 @@
 
 ## 1.3.0
 - Added `DrivenTouchScaleResolver.stevens()` constructor for perceptually balanced touch scaling based on Stevens' Power Law Stevens scaling provides consistent visual feedback across different widget sizes. (smaller widgets get stronger effects, larger widgets get subtle effects)
+
+## 1.3.1
+- Modifyed the default `baseIntensity` of `DrivenTouchScaleResolver.stevens` from 0.8 to 0.6 in `TouchScale` widget.
