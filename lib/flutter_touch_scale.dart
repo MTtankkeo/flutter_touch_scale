@@ -8,3 +8,4 @@ export 'components/touch_scale_context.dart';
 export 'components/touch_scale_controller.dart';
 export 'components/touch_scale_gesture_recognizer.dart';
 export 'components/touch_scale_behavior.dart';
+export 'components/touch_scale_resolver.dart';

@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_touch_scale/components/touch_scale_behavior.dart';
 import 'package:flutter_touch_scale/components/touch_scale_context.dart';
 import 'package:flutter_touch_scale/components/touch_scale_controller.dart';
+import 'package:flutter_touch_scale/components/touch_scale_resolver.dart';
+import 'package:flutter_touch_scale/widgets/render_touch_scale.dart';
 import 'package:flutter_touch_scale/widgets/touch_scale_gesture_detector.dart';
 import 'package:flutter_touch_scale/widgets/touch_scale_style.dart';
 
@@ -38,7 +40,7 @@ class TouchScale extends StatefulWidget {
     this.curve,
     this.reverseDuration,
     this.reverseCurve,
-    this.scale,
+    this.resolver,
     this.callPhase,
     this.behavior,
     required this.onPress,
@@ -62,15 +64,15 @@ class TouchScale extends StatefulWidget {
   /// The curve of the reverse animation when scaling back to original size.
   final Curve? reverseCurve;
 
-  /// The scale factor to apply when pressed. For example,
-  /// 0.9 means 90% of the original size.
-  final double? scale;
-
   /// Defines the phase in which a touch scale callback is triggered.
   final TouchScaleCallPhase? callPhase;
 
-  /// The behavior used to apply additional visual effects during
-  /// the scaling interaction, such as opacity or shadow changes.
+  /// The scale factor to apply when pressed. For example,
+  /// 0.9 means 90% of the original size.
+  final TouchScaleResolver? resolver;
+
+  /// Resolves the scale factor to apply during a press interaction.
+  /// e.g. a value of 0.9 scales the widget to 90% of its original size.
   final TouchScaleBehavior? behavior;
 
   /// Called when the gesture is accepted and the press is confirmed.
@@ -103,24 +105,18 @@ class _TouchScaleState extends State<TouchScale>
     return TouchScaleGestureDetector(
       controller: _controller,
       onPress: widget.onPress,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          final Tween<double> tween = Tween(begin: 1.0, end: scale);
-          final double fraction = tween.transform(_controller.animValue);
-
-          return Transform.scale(
-            alignment: Alignment.center,
-            scale: fraction,
-            child: behavior.build(context, widget.child, _controller),
-          );
-        },
+      child: RenderTouchScale(
+        controller: _controller,
+        resolver: resolver,
+        child: behavior.build(context, widget.child, _controller),
       ),
     );
   }
 
-  double get scale {
-    return widget.scale ?? style?.scale ?? 0.9;
+  TouchScaleResolver get resolver {
+    return widget.resolver ??
+        style?.resolver ??
+        DrivenTouchScaleResolver.pixels(10);
   }
 
   @override
@@ -152,7 +148,7 @@ class _TouchScaleState extends State<TouchScale>
   Duration get previewDuration {
     return widget.previewDuration ??
         style?.previewDuration ??
-        Duration(milliseconds: 25);
+        Duration(milliseconds: 50);
   }
 
   @override
@@ -166,6 +162,6 @@ class _TouchScaleState extends State<TouchScale>
   TouchScaleBehavior get behavior {
     return widget.behavior ??
         style?.behavior ??
-        const DrivnTouchScaleBehavior();
+        const DrivenTouchScaleBehavior();
   }
 }

@@ -11,3 +11,10 @@
 
 ## 1.1.1
 - Modified the default hit test behavior from `deferToChild` to `opaque` in `TouchScaleGestureDetector`.
+
+## 1.2.0
+- Modifyed the default `previewDuration` from 25ms to 50ms.
+
+- Added `TouchScaleResolver` class to provide customizable touch-based scaling for widgets.
+
+- Added `DrivenTouchScaleBehavior` class that wraps child widgets with `RepaintBoundary` to improve rendering performance.

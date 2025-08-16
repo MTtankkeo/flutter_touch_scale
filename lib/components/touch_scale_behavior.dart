@@ -11,6 +11,9 @@ abstract class TouchScaleBehavior {
   ///
   /// Used to enhance the visual response when a widget scales, based on
   /// the state provided by the [TouchScaleController].
+  ///
+  /// If you override this method to customize the effects, consider
+  /// wrapping the child in a RepaintBoundary to optimize performance.
   Widget build(
     BuildContext context,
     Widget child,
@@ -19,8 +22,8 @@ abstract class TouchScaleBehavior {
 }
 
 @protected
-class DrivnTouchScaleBehavior extends TouchScaleBehavior {
-  const DrivnTouchScaleBehavior();
+class DrivenTouchScaleBehavior extends TouchScaleBehavior {
+  const DrivenTouchScaleBehavior();
 
   @override
   Widget build(
@@ -28,6 +31,6 @@ class DrivnTouchScaleBehavior extends TouchScaleBehavior {
     Widget child,
     TouchScaleController controller,
   ) {
-    return child;
+    return RepaintBoundary(child: child);
   }
 }
