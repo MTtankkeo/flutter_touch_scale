@@ -12,6 +12,7 @@ class TouchScaleStyle extends InheritedWidget {
     this.reverseCurve,
     this.previewDuration,
     this.callPhase,
+    this.scale,
     this.resolver,
     this.behavior,
     required super.child,
@@ -37,8 +38,16 @@ class TouchScaleStyle extends InheritedWidget {
   /// Defines the phase in which a touch scale callback is triggered.
   final TouchScaleCallPhase? callPhase;
 
-  /// The scale factor to apply when pressed. For example,
-  /// 0.9 means 90% of the original size.
+  /// The fixed scale factor to apply when pressed.
+  ///
+  /// Values below 1.0 shrink the widget, and values above 1.0 expand it.
+  /// Ignored by a descendant [TouchScale] when [TouchScale.resolver] or
+  /// [TouchScale.scale] is provided.
+  final double? scale;
+
+  /// Resolves the scale factor to apply during a press interaction.
+  ///
+  /// Values below 1.0 shrink the widget, and values above 1.0 expand it.
   final TouchScaleResolver? resolver;
 
   /// The behavior used to apply additional visual effects during
@@ -53,6 +62,7 @@ class TouchScaleStyle extends InheritedWidget {
         reverseCurve != oldWidget.reverseCurve ||
         previewDuration != oldWidget.previewDuration ||
         callPhase != oldWidget.callPhase ||
+        scale != oldWidget.scale ||
         resolver != oldWidget.resolver ||
         behavior != oldWidget.behavior;
   }

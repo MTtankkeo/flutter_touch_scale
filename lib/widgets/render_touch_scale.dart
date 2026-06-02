@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_touch_scale/flutter_touch_scale.dart';
@@ -6,17 +8,23 @@ import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 class RenderTouchScale extends SingleChildRenderObjectWidget {
   const RenderTouchScale({
     super.key,
+    required this.scale,
     required this.resolver,
     required this.controller,
     required super.child,
   });
 
+  final double scale;
   final TouchScaleResolver resolver;
   final TouchScaleController controller;
 
   @override
   RenderObject createRenderObject(BuildContext _) {
-    return _TouchScaleRenderBox(resolver: resolver, controller: controller);
+    return _TouchScaleRenderBox(
+      scale: scale,
+      resolver: resolver,
+      controller: controller,
+    );
   }
 
   @override
@@ -26,20 +34,31 @@ class RenderTouchScale extends SingleChildRenderObjectWidget {
   ) {
     (renderObject as _TouchScaleRenderBox)
       ..controller = controller
-      ..resolver = resolver;
+      ..resolver = resolver
+      ..scale = scale;
   }
 }
 
 class _TouchScaleRenderBox extends RenderProxyBox {
   _TouchScaleRenderBox({
     required this.resolver,
+    required double scale,
     required TouchScaleController controller,
   }) {
+    _scale = scale;
     _controller = controller;
     _controller.addListener(markNeedsPaint);
   }
 
   late TouchScaleResolver resolver;
+
+  late double _scale;
+  double get scale => _scale;
+  set scale(double newScale) {
+    if (_scale == newScale) return;
+    _scale = newScale;
+    markNeedsPaint();
+  }
 
   late TouchScaleController _controller;
   TouchScaleController get controller => _controller;
@@ -68,10 +87,10 @@ class _TouchScaleRenderBox extends RenderProxyBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    final double minScale = resolver.transform(size);
+    final double targetScale = resolver.transform(size, this.scale);
     final double scale = Tween(
       begin: 1.0,
-      end: minScale,
+      end: targetScale,
     ).transform(_controller.animValue);
 
     final double dx = size.width / 2;

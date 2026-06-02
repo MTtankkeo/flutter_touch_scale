@@ -21,7 +21,7 @@ enum TouchScaleCallPhase {
   onScaleUpEnd,
 }
 
-/// A widget that scales down its child when pressed and triggers a callback on tap.
+/// A widget that scales its child when pressed and triggers a callback on tap.
 /// Commonly used to enhance tap interactions with visual responsiveness.
 ///
 /// ### Example
@@ -40,6 +40,7 @@ class TouchScale extends StatefulWidget {
     this.curve,
     this.reverseDuration,
     this.reverseCurve,
+    this.scale,
     this.resolver,
     this.callPhase,
     this.behavior,
@@ -64,15 +65,21 @@ class TouchScale extends StatefulWidget {
   /// The curve of the reverse animation when scaling back to original size.
   final Curve? reverseCurve;
 
+  /// The fixed scale factor to apply when pressed.
+  ///
+  /// Values below 1.0 shrink the widget, and values above 1.0 expand it.
+  /// Ignored when [resolver] is provided.
+  final double? scale;
+
   /// Defines the phase in which a touch scale callback is triggered.
   final TouchScaleCallPhase? callPhase;
 
-  /// The scale factor to apply when pressed. For example,
-  /// 0.9 means 90% of the original size.
+  /// Resolves the scale factor to apply during a press interaction.
+  ///
+  /// Values below 1.0 shrink the widget, and values above 1.0 expand it.
   final TouchScaleResolver? resolver;
 
-  /// Resolves the scale factor to apply during a press interaction.
-  /// e.g. a value of 0.9 scales the widget to 90% of its original size.
+  /// Defines additional visual behavior during a press interaction.
   final TouchScaleBehavior? behavior;
 
   /// Called when the gesture is accepted and the press is confirmed.
@@ -85,14 +92,11 @@ class TouchScale extends StatefulWidget {
   State<TouchScale> createState() => _TouchScaleState();
 }
 
-class _TouchScaleState extends State<TouchScale>
-    with TickerProviderStateMixin, TouchScaleContext {
-  late final TouchScaleController _controller = TouchScaleController(
-    context: this,
-  );
+class _TouchScaleState extends State<TouchScale> with TickerProviderStateMixin, TouchScaleContext {
+  late final TouchScaleController _controller = TouchScaleController(context: this);
 
   /// Returns the instance of the current [TouchScaleStyle] widget.
-  TouchScaleStyle? get style => TouchScaleStyle.maybeOf(context);
+  TouchScaleStyle? get style => mounted ? TouchScaleStyle.maybeOf(context) : null;
 
   @override
   void dispose() {
@@ -108,15 +112,18 @@ class _TouchScaleState extends State<TouchScale>
       child: RenderTouchScale(
         controller: _controller,
         resolver: resolver,
+        scale: scale,
         child: behavior.build(context, widget.child, _controller),
       ),
     );
   }
 
   TouchScaleResolver get resolver {
-    return widget.resolver ??
-        style?.resolver ??
-        DrivenTouchScaleResolver.stevens(baseIntensity: 0.6);
+    return widget.resolver ?? style?.resolver ?? TouchScaleResolver.stevens();
+  }
+
+  double get scale {
+    return widget.scale ?? style?.scale ?? 0.5;
   }
 
   @override
@@ -134,9 +141,7 @@ class _TouchScaleState extends State<TouchScale>
 
   @override
   Duration get reverseDuration {
-    return widget.reverseDuration ??
-        style?.reverseDuration ??
-        Duration(milliseconds: 250);
+    return widget.reverseDuration ?? style?.reverseDuration ?? Duration(milliseconds: 250);
   }
 
   @override
@@ -146,22 +151,16 @@ class _TouchScaleState extends State<TouchScale>
 
   @override
   Duration get previewDuration {
-    return widget.previewDuration ??
-        style?.previewDuration ??
-        Duration(milliseconds: 50);
+    return widget.previewDuration ?? style?.previewDuration ?? Duration(milliseconds: 50);
   }
 
   @override
   TouchScaleCallPhase get callPhase {
-    return widget.callPhase ??
-        style?.callPhase ??
-        TouchScaleCallPhase.onAccepted;
+    return widget.callPhase ?? style?.callPhase ?? TouchScaleCallPhase.onAccepted;
   }
 
   @override
   TouchScaleBehavior get behavior {
-    return widget.behavior ??
-        style?.behavior ??
-        const DrivenTouchScaleBehavior();
+    return widget.behavior ?? style?.behavior ?? const DrivenTouchScaleBehavior();
   }
 }

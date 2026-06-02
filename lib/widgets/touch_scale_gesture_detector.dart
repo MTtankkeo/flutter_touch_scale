@@ -17,14 +17,10 @@ class TouchScaleGestureDetector extends StatefulWidget {
   final Widget child;
 
   @override
-  State<TouchScaleGestureDetector> createState() =>
-      _TouchScaleGestureDetectorState();
+  State<TouchScaleGestureDetector> createState() => _TouchScaleGestureDetectorState();
 }
 
 class _TouchScaleGestureDetectorState extends State<TouchScaleGestureDetector> {
-  final HoldingGestureRecognizer _holdingRecognizer =
-      HoldingGestureRecognizer();
-
   /// The instance that defines the [GestureRecognizer] instance
   /// that is currently active and handling pointer events.
   TouchScaleGestureRecognizer? _recognizer;
@@ -49,7 +45,6 @@ class _TouchScaleGestureDetectorState extends State<TouchScaleGestureDetector> {
     );
 
     _recognizer!.addPointer(event);
-    _holdingRecognizer.addPointer(event);
   }
 
   @override

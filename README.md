@@ -18,6 +18,22 @@ TouchScale(
 )
 ```
 
+Use `scale` to choose whether the widget shrinks or expands while pressed.
+
+```dart
+TouchScale(
+  onPress: () => print("Pressed!"),
+  scale: 0.9, // shrink
+  child: ...
+)
+
+TouchScale(
+  onPress: () => print("Pressed!"),
+  scale: 1.1, // expand
+  child: ...
+)
+```
+
 ### How to define the style globally.
 TouchScaleStyle defines the style of its descendant touch scale widgets, similar to how PrimaryScrollController defines the controller for its descendant widgets.
 
@@ -27,6 +43,33 @@ TouchScaleStyle(
   child: ...
 )
 ```
+
+Use `TouchScaleResolver` to customize how the `scale` value is resolved.
+
+```dart
+TouchScale(
+  scale: 0.9,
+  resolver: TouchScaleResolver.percent(),
+  onPress: () => print("Pressed!"),
+  child: ...
+)
+
+TouchScale(
+  scale: 8.0,
+  resolver: TouchScaleResolver.pixels(),
+  onPress: () => print("Pressed!"),
+  child: ...
+)
+
+TouchScale(
+  scale: 0.5,
+  resolver: TouchScaleResolver.stevens(),
+  onPress: () => print("Pressed!"),
+  child: ...
+)
+```
+
+`previewDuration` delays the preview effect only while the gesture is still competing with another gesture. If there is no competing gesture, the touch feedback starts immediately.
 
 ## The Properties of TouchScaleCallPhase
 The enumeration that defines the phase in which a touch scale callback is triggered.

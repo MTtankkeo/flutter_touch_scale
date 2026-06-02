@@ -30,3 +30,19 @@
 
 ## 1.3.1
 - Modifyed the default `baseIntensity` of `DrivenTouchScaleResolver.stevens` from 0.8 to 0.6 in `TouchScale` widget.
+
+## 1.4.0
+- Added `scale` property to `TouchScale` and `TouchScaleStyle`.
+  - Values below `1.0` shrink the widget.
+  - Values above `1.0` expand the widget.
+
+- Reworked `TouchScaleResolver` with const factory constructors:
+  - `TouchScaleResolver.percent()`
+  - `TouchScaleResolver.pixels()`
+  - `TouchScaleResolver.stevens()`
+
+- Fixed `StevensTouchScaleResolver` so scale values below and above `1.0` produce opposite visual directions correctly.
+
+- Improved `previewDuration` behavior so delayed preview is only used while the gesture is still competing in the gesture arena.
+  - Touch feedback now starts immediately when there is no competing gesture.
+  - `onPress` still waits until the pointer interaction is confirmed.

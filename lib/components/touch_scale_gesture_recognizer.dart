@@ -31,22 +31,35 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   Timer? _timer;
 
   bool isRejectable = false;
+  bool _isAccepted = false;
+  bool _isCanceled = false;
+  bool _isPointerDown = false;
 
   Offset? _pointerDownPosition;
   Offset? _pointerMovePosition;
 
   Offset get movedPosition {
-    return (_pointerDownPosition ?? Offset.zero) -
-        (_pointerMovePosition ?? Offset.zero);
+    return (_pointerDownPosition ?? Offset.zero) - (_pointerMovePosition ?? Offset.zero);
   }
 
   @override
   void acceptGesture(int pointer) {
     super.acceptGesture(pointer);
 
-    isRejectable ? onPressAccept.call() : onPress.call();
+    _timer?.cancel();
+    _isAccepted = true;
 
-    // Since the gesture was accepted, call the function below to allow it to be disposed.
+    if (_isCanceled) {
+      didStopTrackingLastPointer(pointer);
+      return;
+    }
+
+    if (_isPointerDown) {
+      _onRejectable();
+      return;
+    }
+
+    _acceptPress();
     didStopTrackingLastPointer(pointer);
   }
 
@@ -71,6 +84,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   @override
   void handleEvent(PointerEvent event) {
     if (event is PointerDownEvent) {
+      _isPointerDown = true;
       _pointerDownPosition = event.localPosition;
 
       if (previewMinDuration != null) {
@@ -81,42 +95,40 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     if (event is PointerMoveEvent) {
       _pointerMovePosition = event.localPosition;
 
-      if (movedPosition.dx.abs() > kTouchSlop ||
-          movedPosition.dy.abs() > kTouchSlop) {
+      if (movedPosition.dx.abs() > kTouchSlop || movedPosition.dy.abs() > kTouchSlop) {
+        _isCanceled = true;
+        if (_isAccepted && isRejectable) {
+          onPressReject.call();
+          didStopTrackingLastPointer(event.pointer);
+          return;
+        }
+
         resolve(GestureDisposition.rejected);
+      }
+    }
+
+    if (event is PointerUpEvent || event is PointerCancelEvent) {
+      _isPointerDown = false;
+      _timer?.cancel();
+
+      if (_isAccepted && !_isCanceled) {
+        _acceptPress();
+        didStopTrackingLastPointer(event.pointer);
       }
     }
   }
 
   void _onRejectable() {
+    if (isRejectable || _isCanceled) return;
+
     isRejectable = true;
     onPressRejectable.call();
   }
 
+  void _acceptPress() {
+    isRejectable ? onPressAccept.call() : onPress.call();
+  }
+
   @override
   String get debugDescription => "press by touch scale";
-}
-
-/// The gesture recognizer that tracks holding gestures, defined as when a pointer
-/// is pressed but not yet released. It resolves the gesture if the pointer
-/// is lifted.
-///
-/// Primarily used to prevent a tap gesture from being immediately
-/// recognized on pointer down when there are no competing gestures.
-@protected
-class HoldingGestureRecognizer extends OneSequenceGestureRecognizer {
-  @override
-  String get debugDescription => "holding";
-
-  /// Called when the recognizer stops tracking the last pointer.
-  /// This method is empty since no specific action is needed when the last pointer is stopped.
-  @override
-  void didStopTrackingLastPointer(int pointer) {}
-
-  /// Handles the incoming pointer events. If a [PointerUpEvent] is detected,
-  /// the gesture is rejected for the acceptance of other gestures. (e.g. tap)
-  @override
-  void handleEvent(PointerEvent event) {
-    if (event is PointerUpEvent) resolve(GestureDisposition.rejected);
-  }
 }
