@@ -107,7 +107,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
       }
     }
 
-    if (event is PointerUpEvent || event is PointerCancelEvent) {
+    if (event is PointerUpEvent) {
       _isPointerDown = false;
       _timer?.cancel();
 
@@ -115,6 +115,18 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
         _acceptPress();
         didStopTrackingLastPointer(event.pointer);
       }
+    }
+
+    if (event is PointerCancelEvent) {
+      _isPointerDown = false;
+      _isCanceled = true;
+      _timer?.cancel();
+
+      if (isRejectable) {
+        onPressReject.call();
+      }
+
+      didStopTrackingLastPointer(event.pointer);
     }
   }
 

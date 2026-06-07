@@ -46,3 +46,6 @@
 - Improved `previewDuration` behavior so delayed preview is only used while the gesture is still competing in the gesture arena.
   - Touch feedback now starts immediately when there is no competing gesture.
   - `onPress` still waits until the pointer interaction is confirmed.
+
+## 1.4.1
+- Fixed an issue where `onPress` could be called after a pointer cancellation.
