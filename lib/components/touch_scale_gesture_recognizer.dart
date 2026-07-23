@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
 /// The gesture recognizer that initiates a press effect early and determines later
 /// whether the gesture should be accepted or rejected.
@@ -13,6 +15,7 @@ import 'package:flutter/widgets.dart';
 @protected
 class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   TouchScaleGestureRecognizer({
+    required this.context,
     required this.onPress,
     required this.onPressRejectable,
     required this.onPressAccept,
@@ -21,6 +24,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     this.previewMinDuration,
   });
 
+  final TouchScaleContext context;
   final VoidCallback onPress;
   final VoidCallback onPressRejectable;
   final VoidCallback onPressAccept;
@@ -32,14 +36,29 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
 
   bool isRejectable = false;
   bool _isAccepted = false;
+  bool _isRejected = false;
   bool _isCanceled = false;
   bool _isPointerDown = false;
 
   Offset? _pointerDownPosition;
   Offset? _pointerMovePosition;
 
-  Offset get movedPosition {
-    return (_pointerDownPosition ?? Offset.zero) - (_pointerMovePosition ?? Offset.zero);
+  /// Returns the render box corresponding to the initialized build context.
+  RenderBox? get _renderBox => context.context.findRenderObject() as RenderBox?;
+
+  /// Returns the distance the pointer has moved since it was detected.
+  Offset get _pointerMoveDistance => (_pointerDownPosition ?? Offset.zero) - (_pointerMovePosition ?? Offset.zero);
+
+  /// Returns whether to reject the gesture based on the given pointer offset.
+  bool rejectByPosition(Offset offset) {
+    if (_isRejected) return false;
+    if (context.rejectBehavior == TouchScaleRejectBehavior.none) return false;
+    if (context.rejectBehavior == TouchScaleRejectBehavior.leave) {
+      return !(_renderBox?.hitTest(BoxHitTestResult(), position: offset) ?? false);
+    }
+
+    // is TouchScaleRejectBehavior.touchSlop
+    return _pointerMoveDistance.dx.abs() > kTouchSlop || _pointerMoveDistance.dy.abs() > kTouchSlop;
   }
 
   @override
@@ -83,9 +102,11 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
 
   @override
   void handleEvent(PointerEvent event) {
+    final currentPosition = event.localPosition;
+
     if (event is PointerDownEvent) {
       _isPointerDown = true;
-      _pointerDownPosition = event.localPosition;
+      _pointerDownPosition = currentPosition;
 
       if (previewMinDuration != null) {
         _timer = Timer(previewMinDuration!, _onRejectable);
@@ -93,11 +114,13 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     }
 
     if (event is PointerMoveEvent) {
-      _pointerMovePosition = event.localPosition;
+      _pointerMovePosition = currentPosition;
 
-      if (movedPosition.dx.abs() > kTouchSlop || movedPosition.dy.abs() > kTouchSlop) {
+      if (rejectByPosition(currentPosition)) {
         _isCanceled = true;
+
         if (_isAccepted && isRejectable) {
+          _isRejected = true;
           onPressReject.call();
           didStopTrackingLastPointer(event.pointer);
           return;

@@ -15,6 +15,7 @@ class TouchScaleStyle extends InheritedWidget {
     this.scale,
     this.resolver,
     this.behavior,
+    this.rejectBehavior,
     required super.child,
   });
 
@@ -54,6 +55,9 @@ class TouchScaleStyle extends InheritedWidget {
   /// the scaling interaction, such as opacity or shadow changes.
   final TouchScaleBehavior? behavior;
 
+  /// The behavior used to reject a gesture based on pointer movement.
+  final TouchScaleRejectBehavior? rejectBehavior;
+
   @override
   bool updateShouldNotify(TouchScaleStyle oldWidget) {
     return duration != oldWidget.duration ||
@@ -64,7 +68,8 @@ class TouchScaleStyle extends InheritedWidget {
         callPhase != oldWidget.callPhase ||
         scale != oldWidget.scale ||
         resolver != oldWidget.resolver ||
-        behavior != oldWidget.behavior;
+        behavior != oldWidget.behavior ||
+        rejectBehavior != oldWidget.rejectBehavior;
   }
 
   /// Returns the [TouchScaleStyle] most closely associated with the given

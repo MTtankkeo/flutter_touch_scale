@@ -4,6 +4,9 @@ export 'widgets/touch_scale.dart';
 export 'widgets/touch_scale_style.dart';
 export 'widgets/touch_scale_gesture_detector.dart';
 
+export 'enums/touch_scale_call_phase.dart';
+export 'enums/touch_scale_reject_behavior.dart';
+
 export 'components/touch_scale_context.dart';
 export 'components/touch_scale_controller.dart';
 export 'components/touch_scale_gesture_recognizer.dart';

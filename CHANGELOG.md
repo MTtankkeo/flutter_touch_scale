@@ -49,3 +49,13 @@
 
 ## 1.4.1
 - Fixed an issue where `onPress` could be called after a pointer cancellation.
+
+## 1.5.0
+- Added `TouchScaleRejectBehavior` to define how pointer movement rejects a touch scale gesture.
+  - `none`: Does not reject the gesture based on pointer movement.
+  - `touchSlop`: Rejects the gesture when the pointer moves beyond the touch slop.
+  - `leave`: Rejects the gesture when the pointer leaves the widget bounds.
+
+- Added the `rejectBehavior` property to `TouchScale` and `TouchScaleStyle`. The default behavior is `TouchScaleRejectBehavior.leave`.
+
+- Improved gesture rejection handling when the scale animation has not started.

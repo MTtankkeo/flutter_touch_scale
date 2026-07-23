@@ -1,25 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_touch_scale/components/touch_scale_behavior.dart';
-import 'package:flutter_touch_scale/components/touch_scale_context.dart';
-import 'package:flutter_touch_scale/components/touch_scale_controller.dart';
-import 'package:flutter_touch_scale/components/touch_scale_resolver.dart';
+import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 import 'package:flutter_touch_scale/widgets/render_touch_scale.dart';
-import 'package:flutter_touch_scale/widgets/touch_scale_gesture_detector.dart';
-import 'package:flutter_touch_scale/widgets/touch_scale_style.dart';
-
-/// The enumeration that defines the phase in which
-/// a touch scale callback is triggered.
-enum TouchScaleCallPhase {
-  /// Sets the phase when the gesture is accepted,
-  /// regardless of whether the animation starts.
-  onAccepted,
-
-  /// Sets the phase when the scale-down animation has completed.
-  onScaleDownEnd,
-
-  /// Sets the phase when the scale-up animation has completed.
-  onScaleUpEnd,
-}
 
 /// A widget that scales its child when pressed and triggers a callback on tap.
 /// Commonly used to enhance tap interactions with visual responsiveness.
@@ -44,6 +25,7 @@ class TouchScale extends StatefulWidget {
     this.resolver,
     this.callPhase,
     this.behavior,
+    this.rejectBehavior,
     required this.onPress,
     required this.child,
   });
@@ -82,6 +64,9 @@ class TouchScale extends StatefulWidget {
   /// Defines additional visual behavior during a press interaction.
   final TouchScaleBehavior? behavior;
 
+  /// Defines how the gesture is rejected based on pointer movement.
+  final TouchScaleRejectBehavior? rejectBehavior;
+
   /// Called when the gesture is accepted and the press is confirmed.
   final VoidCallback onPress;
 
@@ -107,6 +92,7 @@ class _TouchScaleState extends State<TouchScale> with TickerProviderStateMixin, 
   @override
   Widget build(BuildContext context) {
     return TouchScaleGestureDetector(
+      context: this,
       controller: _controller,
       onPress: widget.onPress,
       child: RenderTouchScale(
@@ -162,5 +148,10 @@ class _TouchScaleState extends State<TouchScale> with TickerProviderStateMixin, 
   @override
   TouchScaleBehavior get behavior {
     return widget.behavior ?? style?.behavior ?? const DrivenTouchScaleBehavior();
+  }
+
+  @override
+  TouchScaleRejectBehavior get rejectBehavior {
+    return widget.rejectBehavior ?? style?.rejectBehavior ?? TouchScaleRejectBehavior.leave;
   }
 }

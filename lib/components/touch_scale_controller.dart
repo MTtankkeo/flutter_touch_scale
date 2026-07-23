@@ -33,7 +33,6 @@ class TouchScaleController extends ChangeNotifier {
 
   /// Accepts the gesture and notifies listeners of the current animation status.
   void accept() {
-    assert(_animation != null);
     assert(callback != null);
     isRejectable = false;
     _animation?.notifyStatusListeners(_animation!.status);
@@ -42,7 +41,7 @@ class TouchScaleController extends ChangeNotifier {
 
   /// Rejects the gesture and starts reversing the animation.
   void reject() {
-    assert(_animation != null);
+    if (_animation == null) return;
     _animation?.reverse();
   }
 

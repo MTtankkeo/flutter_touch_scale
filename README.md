@@ -71,6 +71,25 @@ TouchScale(
 
 `previewDuration` delays the preview effect only while the gesture is still competing with another gesture. If there is no competing gesture, the touch feedback starts immediately.
 
+Use `rejectBehavior` to define how pointer movement rejects the gesture. The default is `TouchScaleRejectBehavior.leave`.
+
+```dart
+TouchScale(
+  rejectBehavior: TouchScaleRejectBehavior.touchSlop,
+  onPress: () => print("Pressed!"),
+  child: ...
+)
+```
+
+You can also apply the behavior to descendant widgets through `TouchScaleStyle`.
+
+```dart
+TouchScaleStyle(
+  rejectBehavior: TouchScaleRejectBehavior.none,
+  child: ...
+)
+```
+
 ## The Properties of TouchScaleCallPhase
 The enumeration that defines the phase in which a touch scale callback is triggered.
 
@@ -79,3 +98,12 @@ The enumeration that defines the phase in which a touch scale callback is trigge
 | onAccepted | Sets the phase when the gesture is accepted, regardless of whether the animation starts. |
 | onScaleDownEnd | Sets the phase when the scale-down animation has completed. |
 | onScaleUpEnd | Sets the phase when the scale-up animation has completed. |
+
+## The Properties of TouchScaleRejectBehavior
+The enumeration that defines how a touch scale gesture is rejected based on pointer movement.
+
+| Name | Description |
+| ---- | ----------- |
+| none | Does not reject the gesture based on pointer movement. |
+| touchSlop | Rejects the gesture when the pointer moves beyond the touch slop. |
+| leave | Rejects the gesture when the pointer leaves the widget bounds. |
