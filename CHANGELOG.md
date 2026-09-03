@@ -59,3 +59,14 @@
 - Added the `rejectBehavior` property to `TouchScale` and `TouchScaleStyle`. The default behavior is `TouchScaleRejectBehavior.leave`.
 
 - Improved gesture rejection handling when the scale animation has not started.
+
+## 1.6.0
+- Added lifecycle callbacks to `TouchScale`.
+  - `onPressStart`: Called immediately when the pointer starts pressing the widget.
+  - `onPressEnd`: Called when the press interaction ends, including cancellation or rejection.
+  - `onScaleStart`: Called when the scale effect starts.
+  - `onScaleEnd`: Called when the scale effect ends.
+
+- Modified `onPress` to be optional.
+
+- Updated the minimum supported versions to Dart 3.5.0 and Flutter 3.24.0.

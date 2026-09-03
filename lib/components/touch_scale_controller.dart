@@ -24,6 +24,12 @@ class TouchScaleController extends ChangeNotifier {
   /// A callback to be invoked when conditions are met.
   VoidCallback? callback;
 
+  /// Called when the scale animation starts.
+  VoidCallback? onScaleStart;
+
+  /// Called when the scale animation ends.
+  VoidCallback? onScaleEnd;
+
   /// Calls [callback] if the gesture is not rejectable, then clears it.
   void tryCall() {
     if (isRejectable) return;
@@ -67,6 +73,7 @@ class TouchScaleController extends ChangeNotifier {
           isRejectable = false;
           _animation?.dispose();
           _animation = null;
+          onScaleEnd?.call();
           _whenPhase(TouchScaleCallPhase.onScaleUpEnd);
         }
       });
@@ -76,6 +83,8 @@ class TouchScaleController extends ChangeNotifier {
         curve: context.curve,
         reverseCurve: context.reverseCurve,
       );
+
+      onScaleStart?.call();
     }
 
     _animation?.forward();

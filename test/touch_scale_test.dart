@@ -12,8 +12,8 @@ void main() {
         child: Center(
           child: TouchScale(
             previewDuration: Duration.zero,
-            duration: Duration.zero,
             reverseDuration: Duration.zero,
+            duration: Duration.zero,
             onPress: () => pressCount++,
             child: const SizedBox(width: 100, height: 100),
           ),

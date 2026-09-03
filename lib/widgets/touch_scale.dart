@@ -26,7 +26,11 @@ class TouchScale extends StatefulWidget {
     this.callPhase,
     this.behavior,
     this.rejectBehavior,
-    required this.onPress,
+    this.onPress,
+    this.onPressStart,
+    this.onPressEnd,
+    this.onScaleStart,
+    this.onScaleEnd,
     required this.child,
   });
 
@@ -68,7 +72,25 @@ class TouchScale extends StatefulWidget {
   final TouchScaleRejectBehavior? rejectBehavior;
 
   /// Called when the gesture is accepted and the press is confirmed.
-  final VoidCallback onPress;
+  final VoidCallback? onPress;
+
+  /// Called immediately when the pointer starts pressing the widget.
+  final VoidCallback? onPressStart;
+
+  /// Called when the press interaction ends, including cancellation or rejection.
+  final VoidCallback? onPressEnd;
+
+  /// Called when the scale effect starts.
+  ///
+  /// If the effect restarts while returning to its initial state,
+  /// this callback is not called again until the previous effect ends.
+  final VoidCallback? onScaleStart;
+
+  /// Called when the scale effect ends.
+  ///
+  /// If the effect restarts while returning to its initial state,
+  /// this callback is not called until the restarted effect ends.
+  final VoidCallback? onScaleEnd;
 
   /// The widget below this widget in the tree that will be scaled.
   final Widget child;
@@ -91,10 +113,16 @@ class _TouchScaleState extends State<TouchScale> with TickerProviderStateMixin, 
 
   @override
   Widget build(BuildContext context) {
+    _controller
+      ..onScaleStart = widget.onScaleStart
+      ..onScaleEnd = widget.onScaleEnd;
+
     return TouchScaleGestureDetector(
       context: this,
       controller: _controller,
-      onPress: widget.onPress,
+      onPress: widget.onPress ?? () {},
+      onPressStart: widget.onPressStart,
+      onPressEnd: widget.onPressEnd,
       child: RenderTouchScale(
         controller: _controller,
         resolver: resolver,

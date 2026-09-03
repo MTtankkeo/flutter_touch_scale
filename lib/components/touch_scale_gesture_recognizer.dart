@@ -5,8 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 
-/// The gesture recognizer that initiates a press effect early and determines later
-/// whether the gesture should be accepted or rejected.
+/// Recognizes a press early and later determines whether it is accepted.
 ///
 /// Designed to preview a visual or behavioral effect immediately on touch down,
 /// and cancel it later if the gesture is rejected or disqualified due to movement.
@@ -16,6 +15,8 @@ import 'package:flutter_touch_scale/flutter_touch_scale.dart';
 class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   TouchScaleGestureRecognizer({
     required this.context,
+    this.onPressStart,
+    this.onPressEnd,
     required this.onPress,
     required this.onPressRejectable,
     required this.onPressAccept,
@@ -25,6 +26,8 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   });
 
   final TouchScaleContext context;
+  final VoidCallback? onPressStart;
+  final VoidCallback? onPressEnd;
   final VoidCallback onPress;
   final VoidCallback onPressRejectable;
   final VoidCallback onPressAccept;
@@ -32,6 +35,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   final VoidCallback onDispose;
   final Duration? previewMinDuration;
 
+  /// A threshold timer for showing the scale preview during gesture competition.
   Timer? _timer;
 
   bool isRejectable = false;
@@ -98,6 +102,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   void didStopTrackingLastPointer(int pointer) {
     _timer?.cancel();
     onDispose.call();
+    onPressEnd?.call();
   }
 
   @override
@@ -107,6 +112,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     if (event is PointerDownEvent) {
       _isPointerDown = true;
       _pointerDownPosition = currentPosition;
+      onPressStart?.call();
 
       if (previewMinDuration != null) {
         _timer = Timer(previewMinDuration!, _onRejectable);
@@ -153,6 +159,7 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     }
   }
 
+  /// Provides early scale feedback while the gesture can still be rejected.
   void _onRejectable() {
     if (isRejectable || _isCanceled) return;
 
@@ -160,8 +167,14 @@ class TouchScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     onPressRejectable.call();
   }
 
+  /// Completes the press through the appropriate path based
+  /// on whether the scale preview has already started.
   void _acceptPress() {
-    isRejectable ? onPressAccept.call() : onPress.call();
+    if (isRejectable) {
+      onPressAccept.call();
+    } else {
+      onPress.call();
+    }
   }
 
   @override

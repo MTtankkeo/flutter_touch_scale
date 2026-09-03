@@ -9,6 +9,8 @@ class TouchScaleGestureDetector extends StatefulWidget {
     required this.context,
     required this.controller,
     required this.onPress,
+    this.onPressStart,
+    this.onPressEnd,
     required this.child,
   });
 
@@ -16,6 +18,8 @@ class TouchScaleGestureDetector extends StatefulWidget {
   final TouchScaleContext context;
   final TouchScaleController controller;
   final VoidCallback onPress;
+  final VoidCallback? onPressStart;
+  final VoidCallback? onPressEnd;
   final Widget child;
 
   @override
@@ -30,6 +34,8 @@ class _TouchScaleGestureDetectorState extends State<TouchScaleGestureDetector> {
   void _handlePointerDown(PointerDownEvent event) {
     _recognizer ??= TouchScaleGestureRecognizer(
       context: widget.context,
+      onPressStart: widget.onPressStart,
+      onPressEnd: widget.onPressEnd,
       onPress: () {
         widget.controller.callback = widget.onPress;
         widget.controller.forward();

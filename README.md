@@ -18,6 +18,19 @@ TouchScale(
 )
 ```
 
+Use the lifecycle callbacks to respond to press interactions and scale effects.
+
+```dart
+TouchScale(
+  onPress: () => print("Pressed"),
+  onPressStart: () => print("Press started"),
+  onPressEnd: () => print("Press ended"),
+  onScaleStart: () => print("Scale effect started"),
+  onScaleEnd: () => print("Scale effect ended"),
+  child: ...
+)
+```
+
 Use `scale` to choose whether the widget shrinks or expands while pressed.
 
 ```dart
