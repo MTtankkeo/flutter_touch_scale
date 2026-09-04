@@ -120,7 +120,7 @@ class _TouchScaleState extends State<TouchScale> with TickerProviderStateMixin, 
     return TouchScaleGestureDetector(
       context: this,
       controller: _controller,
-      onPress: widget.onPress ?? () {},
+      onPress: widget.onPress,
       onPressStart: widget.onPressStart,
       onPressEnd: widget.onPressEnd,
       child: RenderTouchScale(

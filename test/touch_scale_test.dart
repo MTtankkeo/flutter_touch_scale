@@ -28,4 +28,35 @@ void main() {
 
     expect(pressCount, 0);
   });
+
+  testWidgets('does not start an interaction when onPress is null', (tester) async {
+    int pressStartCount = 0;
+    int pressEndCount = 0;
+    int scaleStartCount = 0;
+    int scaleEndCount = 0;
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: TouchScale(
+            previewDuration: Duration.zero,
+            onPressStart: () => pressStartCount++,
+            onPressEnd: () => pressEndCount++,
+            onScaleStart: () => scaleStartCount++,
+            onScaleEnd: () => scaleEndCount++,
+            child: const SizedBox(width: 100, height: 100),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(TouchScale));
+    await tester.pumpAndSettle();
+
+    expect(pressStartCount, 0);
+    expect(pressEndCount, 0);
+    expect(scaleStartCount, 0);
+    expect(scaleEndCount, 0);
+  });
 }

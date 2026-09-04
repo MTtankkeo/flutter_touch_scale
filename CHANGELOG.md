@@ -70,3 +70,6 @@
 - Modified `onPress` to be optional.
 
 - Updated the minimum supported versions to Dart 3.5.0 and Flutter 3.24.0.
+
+## 1.6.1
+- Fixed an issue where press interactions and scale effects would still start when `onPress` was null.
